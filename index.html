@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>United Airlines Route Network Performance Review</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ua-blue: #005DAA;
+    --ua-blue-dark: #003C6C;
+    --ua-blue-light: #E8F0FE;
+    --ua-text: #1B1B1B;
+    --ua-gray: #6B7280;
+    --ua-border: #D9E4F2;
+    --ua-white: #FFFFFF;
+    --ua-green: #1C8A4B;
+    --ua-amber: #C9750A;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.08);
+    --shadow-md: 0 8px 24px rgba(0,61,108,0.10);
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ua-text);
+    background: var(--ua-white);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img{ max-width:100%; display:block; }
+
+  a{ color: inherit; }
+
+  /* ---------- Header ---------- */
+  header.ua-header{
+    background: var(--ua-white);
+    border-bottom: 1px solid var(--ua-border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .ua-header-inner{
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .ua-logo-wrap{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 34px;
+  }
+  .ua-logo-wrap img{
+    height: 30px;
+    width: auto;
+  }
+  .ua-logo-fallback{
+    display: none;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--ua-blue);
+  }
+  .ua-header-tag{
+    font-size: 13px;
+    color: var(--ua-gray);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-align: right;
+    display: none;
+  }
+  @media (min-width: 640px){
+    .ua-header-tag{ display:block; }
+  }
+
+  /* ---------- Section shell ---------- */
+  section{
+    padding: 72px 32px;
+  }
+  .section-inner{
+    max-width: 1160px;
+    margin: 0 auto;
+  }
+  .section-alt{
+    background: var(--ua-blue-light);
+  }
+  .eyebrow{
+    text-transform: uppercase;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    color: var(--ua-blue);
+    margin-bottom: 10px;
+  }
+  h2.section-title{
+    font-size: clamp(24px, 3.4vw, 32px);
+    font-weight: 800;
+    color: var(--ua-blue-dark);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  p.section-sub{
+    color: var(--ua-gray);
+    font-size: 16px;
+    max-width: 760px;
+    margin-bottom: 40px;
+  }
+
+  /* ---------- Title / Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(1100px 480px at 15% -10%, rgba(255,255,255,0.10), transparent 60%),
+      linear-gradient(135deg, var(--ua-blue-dark) 0%, var(--ua-blue) 62%, #0072CE 100%);
+    color: var(--ua-white);
+    padding: 96px 32px 84px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after{
+    content:"";
+    position: absolute;
+    right: -120px;
+    bottom: -160px;
+    width: 460px;
+    height: 460px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .hero-inner{
+    max-width: 1160px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: var(--ua-white);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    margin-bottom: 28px;
+    backdrop-filter: blur(2px);
+  }
+  .badge::before{
+    content:"";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #FFC72C;
+    display: inline-block;
+  }
+  h1.hero-title{
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.6px;
+    max-width: 920px;
+    margin-bottom: 20px;
+  }
+  p.hero-subtitle{
+    font-size: clamp(16px, 2vw, 19px);
+    color: rgba(255,255,255,0.88);
+    max-width: 640px;
+    font-weight: 400;
+    margin-bottom: 44px;
+  }
+  .hero-meta{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.25);
+  }
+  .hero-meta-item{
+    min-width: 160px;
+  }
+  .hero-meta-label{
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  .hero-meta-value{
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  /* ---------- Executive Summary ---------- */
+  .callout{
+    background: var(--ua-white);
+    border-left: 5px solid var(--ua-blue);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+    padding: 28px 30px;
+    margin-bottom: 36px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .callout-icon{
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--ua-blue-light);
+    color: var(--ua-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+  }
+  .callout-title{
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ua-blue);
+    margin-bottom: 6px;
+  }
+  .callout-text{
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ua-text);
+    line-height: 1.5;
+  }
+  .callout-text b{ color: var(--ua-blue-dark); }
+
+  .exec-grid{
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 860px){
+    .exec-grid{ grid-template-columns: 1fr; }
+  }
+  .card{
+    background: var(--ua-white);
+    border: 1px solid var(--ua-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    padding: 26px 28px;
+  }
+  .card h3{
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ua-blue-dark);
+    margin-bottom: 16px;
+    letter-spacing: 0.2px;
+  }
+  ul.check-list{
+    list-style: none;
+  }
+  ul.check-list li{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--ua-border);
+    font-size: 15px;
+  }
+  ul.check-list li:last-child{ border-bottom: none; }
+  ul.check-list li::before{
+    content: "✓";
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ua-blue);
+    color: var(--ua-white);
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  .ba-table{
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .ba-table th{
+    text-align: left;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ua-gray);
+    font-weight: 700;
+    padding: 0 0 10px;
+  }
+  .ba-table td{
+    padding: 14px 0;
+    border-top: 1px solid var(--ua-border);
+    font-size: 15px;
+  }
+  .ba-metric{ font-weight: 600; color: var(--ua-text); }
+  .ba-before{ color: var(--ua-gray); }
+  .ba-arrow{ color: var(--ua-blue); font-weight: 700; padding: 0 6px; }
+  .ba-after{ font-weight: 800; color: var(--ua-green); }
+  .ba-after.neutral{ color: var(--ua-blue-dark); }
+
+  .stat-strip{
+    margin-top: 20px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .stat-pill{
+    flex: 1 1 140px;
+    background: var(--ua-blue-light);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat-pill .num{
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ua-blue-dark);
+  }
+  .stat-pill .lbl{
+    font-size: 11.5px;
+    color: var(--ua-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    font-weight: 700;
+  }
+
+  /* ---------- Methodology ---------- */
+  .meth-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 56px;
+  }
+  @media (max-width: 860px){
+    .meth-grid{ grid-template-columns: 1fr; gap: 24px; }
+  }
+  .meth-block h4{
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ua-blue);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .meth-block p{
+    font-size: 15.5px;
+    color: var(--ua-text);
+  }
+  .tool-tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .tool-tag{
+    background: var(--ua-white);
+    border: 1px solid var(--ua-border);
+    color: var(--ua-blue-dark);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+
+  .steps{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .step{
+    flex: 1 1 0;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .step-circle{
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--ua-blue);
+    color: var(--ua-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    margin: 0 auto 12px;
+    box-shadow: var(--shadow-md);
+    border: 4px solid var(--ua-white);
+  }
+  .step:nth-child(2) .step-circle{ background: #0072CE; }
+  .step:nth-child(3) .step-circle{ background: #4F9BE0; }
+  .step:nth-child(4) .step-circle{ background: var(--ua-blue-dark); }
+  .step-label{
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ua-blue-dark);
+  }
+  .step-line{
+    position: absolute;
+    top: 27px;
+    left: 60px;
+    right: 60px;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, var(--ua-blue), var(--ua-blue) 8px, transparent 8px, transparent 14px);
+    z-index: 1;
+  }
+  @media (max-width: 640px){
+    .steps{ flex-direction: column; gap: 28px; }
+    .step-line{ display: none; }
+  }
+
+  /* ---------- Table section ---------- */
+  .table-wrap{
+    background: var(--ua-white);
+    border: 1px solid var(--ua-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .table-scroll{
+    overflow-x: auto;
+  }
+  table.route-table{
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+  table.route-table thead th{
+    background: var(--ua-blue);
+    color: var(--ua-white);
+    text-align: left;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 18px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  table.route-table thead th.num{ text-align: right; }
+  table.route-table tbody td{
+    padding: 14px 18px;
+    font-size: 14.5px;
+    border-top: 1px solid var(--ua-border);
+    white-space: nowrap;
+  }
+  table.route-table tbody td.num{ text-align: right; font-variant-numeric: tabular-nums; }
+  table.route-table tbody tr:nth-child(even){ background: #FAFBFD; }
+  table.route-table tbody tr.highlight{
+    background: var(--ua-blue-light);
+    box-shadow: inset 3px 0 0 var(--ua-blue);
+  }
+  table.route-table tbody tr.highlight td{ font-weight: 700; color: var(--ua-blue-dark); }
+  .route-name{ font-weight: 600; }
+  .route-name .sub{ display:block; font-weight: 400; font-size: 12px; color: var(--ua-gray); }
+  .flag-tag{
+    display: inline-block;
+    background: var(--ua-blue);
+    color: var(--ua-white);
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .legend-note{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--ua-gray);
+    margin-top: 16px;
+  }
+  .legend-swatch{
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: var(--ua-blue-light);
+    box-shadow: inset 2px 0 0 var(--ua-blue);
+    display: inline-block;
+  }
+
+  /* ---------- Footer ---------- */
+  footer.ua-footer{
+    background: var(--ua-blue-dark);
+    color: rgba(255,255,255,0.85);
+    padding: 30px 32px;
+  }
+  .footer-inner{
+    max-width: 1160px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .footer-inner .conf{
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #FFC72C;
+  }
+  .footer-inner .meta{
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  @media (max-width: 640px){
+    section{ padding: 52px 20px; }
+    .hero{ padding: 72px 20px 60px; }
+    .ua-header-inner{ padding: 14px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="ua-header">
+  <div class="ua-header-inner">
+    <div class="ua-logo-wrap">
+      <img src="https://www.united.com/etc/designs/united/clientlibs/images/ua-logo-blue.svg"
+           alt="United Airlines"
+           onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
+      <span id="logoFallback" class="ua-logo-fallback">UNITED</span>
+    </div>
+    <div class="ua-header-tag">Network Planning &amp; Analytics</div>
+  </div>
+</header>
+
+<!-- ============ SECTION 1: TITLE ============ -->
+<section class="hero" id="title">
+  <div class="hero-inner">
+    <span class="badge">Prepared for Network Planning Leadership</span>
+    <h1 class="hero-title">United Airlines Route Network Performance Review</h1>
+    <p class="hero-subtitle">Operational Analysis &amp; Schedule Optimization Recommendation</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Prepared By</div>
+        <div class="hero-meta-value">[Your Name]</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Date</div>
+        <div class="hero-meta-value">[Date]</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Distribution</div>
+        <div class="hero-meta-value">Internal – Network Planning</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 2: EXECUTIVE SUMMARY ============ -->
+<section id="summary">
+  <div class="section-inner">
+    <div class="eyebrow">Section 01</div>
+    <h2 class="section-title">Executive Summary</h2>
+    <p class="section-sub">A schedule-level intervention on a single high-frequency route yields a measurable, low-cost improvement in on-time performance.</p>
+
+    <div class="callout">
+      <div class="callout-icon">★</div>
+      <div>
+        <div class="callout-title">Key Finding</div>
+        <div class="callout-text">Adding a <b>10-minute schedule buffer</b> on <b>SFO&nbsp;→&nbsp;ORD</b> can boost on-time performance from <b>42% to 63%</b>, reducing controllable delays significantly.</div>
+      </div>
+    </div>
+
+    <div class="exec-grid">
+      <div class="card">
+        <h3>Analysis Highlights</h3>
+        <ul class="check-list">
+          <li>Analyzed 40,873 UA flights across the network</li>
+          <li>Identified and ranked the top 10 routes by volume</li>
+          <li>Diagnosed root causes of departure and arrival delay</li>
+          <li>Simulated the impact of a 10-minute schedule buffer</li>
+          <li>Recommendation finalized and ready for review</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Before vs. After — SFO → ORD</h3>
+        <table class="ba-table">
+          <thead>
+            <tr><th>Metric</th><th>Before</th><th></th><th>After</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ba-metric">On-Time Performance</td>
+              <td class="ba-before">42%</td>
+              <td class="ba-arrow">→</td>
+              <td class="ba-after">63%</td>
+            </tr>
+            <tr>
+              <td class="ba-metric">Avg. Arrival Delay</td>
+              <td class="ba-before">14.8 min</td>
+              <td class="ba-arrow">→</td>
+              <td class="ba-after">13.8 min</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="stat-strip">
+          <div class="stat-pill">
+            <div class="num">−206</div>
+            <div class="lbl">Total Delay Minutes</div>
+          </div>
+          <div class="stat-pill">
+            <div class="num">43</div>
+            <div class="lbl">Flights Impacted</div>
+          </div>
+          <div class="stat-pill">
+            <div class="num">+21pt</div>
+            <div class="lbl">OTP Improvement</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 3: METHODOLOGY & SCOPE ============ -->
+<section class="section-alt" id="methodology">
+  <div class="section-inner">
+    <div class="eyebrow">Section 02</div>
+    <h2 class="section-title">Methodology &amp; Scope</h2>
+    <p class="section-sub">A reproducible, data-driven approach from raw operational records to an actionable scheduling recommendation.</p>
+
+    <div class="meth-grid">
+      <div class="meth-block">
+        <h4>Data Source</h4>
+        <p>This analysis draws on the U.S. Department of Transportation On-Time Performance dataset (2015), filtered to United Airlines mainline operations. The dataset captures scheduled and actual departure/arrival times, delay causes, and cancellation status at the flight level.</p>
+      </div>
+      <div class="meth-block">
+        <h4>Tools &amp; Process</h4>
+        <p>Data extraction, cleaning, and aggregation were performed in Python using Pandas, with KPI calculation, root-cause delay analysis, and buffer-impact simulation conducted on the resulting route-level summary tables.</p>
+        <div class="tool-tags">
+          <span class="tool-tag">Python</span>
+          <span class="tool-tag">Pandas</span>
+          <span class="tool-tag">US DOT On-Time Performance, 2015</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-circle">1</div>
+        <div class="step-label">Data</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-label">Analysis</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-label">Insight</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-label">Recommendation</div>
+      </div>
+      <div class="step-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION: ROOT CAUSE ANALYSIS ============ -->
+<section class="section-alt" id="root-cause">
+  <div class="section-inner">
+    <div class="eyebrow">Section 03</div>
+    <h2 class="section-title">Root Cause Analysis</h2>
+    <p class="section-sub">Diagnosing delay drivers on the five highest‑volume routes reveals that controllable airline and late‑aircraft delays dominate.</p>
+    <div class="card" style="padding: 20px 28px;">
+      <canvas id="delayCauseChart" width="800" height="450"></canvas>
+    </div>
+    <p style="margin-top: 20px; font-size: 14.5px; color: var(--ua-gray);"><strong>Observation:</strong> Airline + Late Aircraft delays account for <b>>85% of controllable delay minutes</b> on SFO → ORD.</p>
+  </div>
+</section>
+
+<!-- ============ SECTION: RECOMMENDATION ============ -->
+<section id="recommendation">
+  <div class="section-inner">
+    <div class="eyebrow">Section 04</div>
+    <h2 class="section-title">Recommendation: Schedule Buffer on SFO → ORD</h2>
+    <p class="section-sub">A 10‑minute increase in scheduled block time substantially improves reliability with minimal operational cost.</p>
+
+    <div class="exec-grid">
+      <div class="card">
+        <h3>Simulation Summary</h3>
+        <ul class="check-list">
+          <li>Scheduled block time adjusted from 252 min to 262 min (+10 min)</li>
+          <li>Average elapsed time remains 249 min (actual flying time unchanged)</li>
+          <li>On‑time arrival performance improves from 42% to 63%</li>
+          <li>Average arrival delay drops from 14.8 min to 13.8 min</li>
+          <li>Total delay minutes across 43 flights reduced by 206 minutes</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Detailed Comparison</h3>
+        <table class="ba-table">
+          <thead>
+            <tr><th>Metric</th><th>Before</th><th></th><th>After</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ba-metric">Scheduled Block Time (min)</td>
+              <td class="ba-before">252</td>
+              <td class="ba-arrow">→</td>
+              <td class="ba-after neutral">262</td>
+            </tr>
+            <tr>
+              <td class="ba-metric">Avg. Elapsed Time (min)</td>
+              <td class="ba-before">249</td>
+              <td class="ba-arrow">→</td>
+              <td class="ba-after neutral">249</td>
+            </tr>
+            <tr>
+              <td class="ba-metric">On‑Time Performance</td>
+              <td class="ba-before">42%</td>
+              <td class="ba-arrow">→</td>
+              <td class="ba-after">63%</td>
+            </tr>
+            <tr>
+              <td class="ba-metric">Avg. Arrival Delay (min)</td>
+              <td class="ba-before">14.8</td>
+              <td class="ba-arrow">→</td>
+              <td class="ba-after">13.8</td>
+            </tr>
+            <tr>
+              <td class="ba-metric">Total Delay Reduction</td>
+              <td class="ba-before">—</td>
+              <td class="ba-arrow">—</td>
+              <td class="ba-after">206 min</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="stat-strip" style="margin-top:20px;">
+          <div class="stat-pill">
+            <div class="num">+21pt</div>
+            <div class="lbl">OTP Improvement</div>
+          </div>
+          <div class="stat-pill">
+            <div class="num">−4.8</div>
+            <div class="lbl">Avg min per flight</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 5: TOP ROUTE PERFORMANCE ============ -->
+<section id="routes">
+  <div class="section-inner">
+    <div class="eyebrow">Section 05</div>
+    <h2 class="section-title">Top Route Performance</h2>
+    <p class="section-sub">The ten highest-volume routes in the analyzed period, ranked by total flights operated.</p>
+
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table class="route-table" id="routeTable">
+          <thead>
+            <tr>
+              <th>Route</th>
+              <th class="num">Total Flights</th>
+              <th class="num">Cancellation %</th>
+              <th class="num">Avg. Departure Delay (min)</th>
+              <th class="num">Avg. Arrival Delay (min)</th>
+            </tr>
+          </thead>
+          <tbody id="routeTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="legend-note">
+      <span class="legend-swatch"></span>
+      Highlighted route is the focus of this report's schedule optimization recommendation.
+    </div>
+  </div>
+</section>
+
+<footer class="ua-footer">
+  <div class="footer-inner">
+    <div class="conf">Confidential – For Internal Use Only</div>
+    <div class="meta">United Airlines · Network Planning Analytics</div>
+  </div>
+</footer>
+
+<script>
+  const routeData = [
+    {"Route":"Los Angeles → Houston","Origin":"LAX","Dest":"IAH","Flights":47,"Cancel%":0.0,"DepDelay":14.98,"ArrDelay":16.47},
+    {"Route":"San Francisco → Chicago","Origin":"SFO","Dest":"ORD","Flights":43,"Cancel%":0.0,"DepDelay":18.02,"ArrDelay":14.81},
+    {"Route":"Denver → Houston","Origin":"DEN","Dest":"IAH","Flights":42,"Cancel%":0.0,"DepDelay":22.33,"ArrDelay":36.00},
+    {"Route":"Houston → Los Angeles","Origin":"IAH","Dest":"LAX","Flights":41,"Cancel%":0.0,"DepDelay":29.37,"ArrDelay":18.71},
+    {"Route":"San Francisco → Newark","Origin":"SFO","Dest":"EWR","Flights":41,"Cancel%":0.0,"DepDelay":14.51,"ArrDelay":5.24},
+    {"Route":"San Francisco → Houston","Origin":"SFO","Dest":"IAH","Flights":40,"Cancel%":0.0,"DepDelay":12.65,"ArrDelay":15.08},
+    {"Route":"Houston → Denver","Origin":"IAH","Dest":"DEN","Flights":40,"Cancel%":0.0,"DepDelay":27.03,"ArrDelay":19.15},
+    {"Route":"Chicago → San Francisco","Origin":"ORD","Dest":"SFO","Flights":38,"Cancel%":0.0,"DepDelay":19.05,"ArrDelay":3.03},
+    {"Route":"Houston → Newark","Origin":"IAH","Dest":"EWR","Flights":38,"Cancel%":0.0,"DepDelay":25.29,"ArrDelay":10.97},
+    {"Route":"Newark → Houston","Origin":"EWR","Dest":"IAH","Flights":38,"Cancel%":0.0,"DepDelay":19.87,"ArrDelay":34.34}
+  ];
+
+  const tbody = document.getElementById('routeTableBody');
+  routeData.forEach(r => {
+    const isFocus = r.Origin === 'SFO' && r.Dest === 'ORD';
+    const tr = document.createElement('tr');
+    if (isFocus) tr.className = 'highlight';
+    tr.innerHTML = `
+      <td class="route-name">${r.Route}${isFocus ? '<span class="flag-tag">FOCUS ROUTE</span>' : ''}
+        <span class="sub">${r.Origin} → ${r.Dest}</span>
+      </td>
+      <td class="num">${r.Flights.toLocaleString()}</td>
+      <td class="num">${r["Cancel%"].toFixed(1)}%</td>
+      <td class="num">${r.DepDelay.toFixed(2)}</td>
+      <td class="num">${r.ArrDelay.toFixed(2)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Delay cause data for top 5 routes
+  const ctx = document.getElementById('delayCauseChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['SFO → ORD', 'IAH → LAX', 'LAX → ORD', 'SFO → EWR', 'IAH → DEN'],
+      datasets: [
+        { label: 'Air System Delay', data: [5.4, 6.9, 11.2, 19.6, 3.7], backgroundColor: '#78909C' },
+        { label: 'Security Delay', data: [0, 0, 0, 0, 0], backgroundColor: '#FFA000' },
+        { label: 'Airline Delay', data: [31.9, 23.5, 19.4, 13.9, 32.7], backgroundColor: '#E53935' },
+        { label: 'Late Aircraft Delay', data: [25.7, 20.5, 20.4, 18.6, 15.3], backgroundColor: '#1E88E5' },
+        { label: 'Weather Delay', data: [0, 1.2, 0, 0, 1.2], backgroundColor: '#43A047' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: { mode: 'index' },
+        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, title: { display: true, text: 'Avg delay minutes per flight' } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
