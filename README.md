@@ -1,161 +1,305 @@
-# ✈️ United Airlines Network Performance Optimization
+<p align="center">
+  <img src="images/banner.png" alt="United Airlines Network Performance Optimization" width="100%">
+</p>
 
-An end-to-end operational analytics project that analyzes **40,873 United Airlines flights** to identify delay patterns, evaluate operational performance, and recommend schedule improvements using Python and data-driven decision making.
+<h1 align="center">✈️ United Airlines Network Performance Optimization</h1>
 
----
+<p align="center">
+A business-focused airline operations analytics project using Python to identify delay patterns, evaluate route and airport performance, and recommend operational improvements.
+</p>
 
-# 📊 Project Overview
+<p align="center">
 
-This project leverages the U.S. Department of Transportation (DOT) On-Time Performance dataset to analyze United Airlines' flight operations and identify opportunities to improve network reliability.
+![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-blue?style=for-the-badge&logo=pandas)
+![NumPy](https://img.shields.io/badge/NumPy-Numerical%20Computing-blue?style=for-the-badge&logo=numpy)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-Visualization-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/Project-Completed-success?style=for-the-badge)
+![Dataset](https://img.shields.io/badge/Dataset-U.S.%20DOT%20Flights-blue?style=for-the-badge)
 
-Using Python and operational analytics techniques, flight-level records were transformed into actionable business insights by evaluating route performance, diagnosing delay root causes, and simulating schedule adjustments to improve on-time performance.
-
-## 🎯 Business Objective
-
-Identify airline-controllable operational inefficiencies and evaluate whether small schedule adjustments can improve network reliability while reducing cumulative delay minutes.
-
----
-
-# 📈 Key Results
-
-- Analyzed **40,873 United Airlines flights**
-- Aggregated flight-level data into operational KPIs
-- Identified airline-controllable delays as the primary contributor on the selected route
-- Simulated a **10-minute schedule buffer** on the worst-performing route (SFO → ORD)
-- Improved projected On-Time Performance from **42% to 63%**
-- Reduced cumulative delay by **206 minutes**
-- Developed an interactive executive report with operational recommendations
+</p>
 
 ---
 
-# 🛠️ Methodology
+# 📖 Executive Summary
 
-### Data Collection
+Airline operations are highly interconnected, where delays at a single airport or route can propagate across the network, affecting aircraft utilization, crew scheduling, passenger connections, and overall operational reliability.
 
-- U.S. DOT On-Time Performance Dataset (2015)
-- 40,873 United Airlines mainline flights
+This project analyzes **472,355 United Airlines flights** from the **U.S. Department of Transportation (DOT) On-Time Performance Dataset (2015)** to identify operational bottlenecks, evaluate network performance, and provide actionable business recommendations.
 
-### Data Processing
-
-- Data cleaning using Pandas
-- Route-level KPI aggregation
-- Delay categorization
-- Root cause analysis
-- Performance benchmarking
-
-### Operational Analysis
-
-- Route performance comparison
-- Delay cause distribution
-- Airline vs Weather delay analysis
-- Schedule buffer simulation
-- Before-and-after performance evaluation
+Rather than focusing on machine learning, this project demonstrates how **business analytics** can support operational decision-making through data exploration, KPI analysis, and operational performance evaluation.
 
 ---
 
-# 📁 Repository Contents
+# 🎯 Business Problem
 
-| File | Description |
-|------|-------------|
-| `index.html` | Interactive HTML report presenting methodology, findings, visualizations, and business recommendations. |
-| `UA_Network_Analysis.ipynb` | Python notebook containing data cleaning, exploratory analysis, KPI calculations, and schedule optimization simulation. |
-| `United_Network_Planning_Presentation.pdf` | Executive presentation summarizing the methodology, insights, and recommendations. |
-| `README.md` | Project overview and supporting documentation. |
+United Airlines operates one of the world's largest hub-and-spoke networks.
 
----
+Small operational disruptions can lead to:
 
-# 💻 Tools & Technologies
+- Flight delays
+- Missed passenger connections
+- Increased crew costs
+- Aircraft rotation issues
+- Reduced aircraft utilization
+- Lower customer satisfaction
+- Network-wide delay propagation
 
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Jupyter Notebook
-- HTML
-- CSS
-- GitHub Pages
+The objective of this project is to identify where operational improvements would have the greatest impact using historical flight performance data.
 
 ---
 
-# 📊 Skills Demonstrated
+# 🎯 Project Objectives
 
-- Business Analysis
-- Operational Analytics
-- Data Cleaning & Transformation
-- Exploratory Data Analysis (EDA)
-- KPI Development & Reporting
-- Root Cause Analysis
-- Schedule Optimization
-- Business Recommendation Development
-- Executive Reporting
-- Data Visualization
-- Python (Pandas)
-- GitHub Pages Deployment
+- Analyze operational performance across United Airlines' network
+- Measure delay and cancellation performance
+- Evaluate airport-level operational efficiency
+- Identify high-risk routes
+- Understand hourly and monthly delay trends
+- Discover operational bottlenecks
+- Provide actionable business recommendations
 
 ---
 
-# 🔗 Project Resources
+# 📊 Dataset
 
-## 🌐 Interactive Report
+### Source
 
-Explore the complete interactive business report:
+**U.S. Department of Transportation (DOT)**
 
-**https://gauravchauhan18215-cmyk.github.io/ua-network-analysis/**
-
----
-
-## 📓 Jupyter Notebook
-
-View the complete Python analysis:
-
-**UA_Network_Analysis.ipynb**
+On-Time Performance Dataset (2015)
 
 ---
 
-## 📄 Executive Presentation
+### Dataset Summary
 
-View the presentation summarizing the project findings:
+| Metric | Value |
+|---------|------:|
+| Original Flights | 5.8+ Million |
+| United Airlines Flights | 515,723 |
+| Final Analysis Dataset | 472,355 |
+| Airports | 322 |
 
-**United_Network_Planning_Presentation.pdf**
-
----
-
-# 💼 Business Impact
-
-The analysis demonstrates how operational analytics can support airline decision-making by:
-
-- Identifying controllable sources of delay
-- Improving schedule reliability through simulation
-- Supporting data-driven network planning
-- Enhancing operational efficiency
-- Communicating analytical findings through executive-ready reports
+During data preparation, flights containing inconsistent airport identifiers were removed to ensure accurate route-level analysis and consistent airport mapping.
 
 ---
 
-# 📷 Dashboard Preview
+# 🔄 Project Workflow
 
-> *(Add 3–4 screenshots of your interactive report here.)*
-
-Suggested screenshots:
-
-- Executive Summary
-- Delay Root Cause Analysis
-- Route Performance Dashboard
-- Schedule Buffer Simulation
+```text
+Business Problem
+        │
+        ▼
+Data Collection
+        │
+        ▼
+Data Cleaning
+        │
+        ▼
+Feature Engineering
+        │
+        ▼
+Exploratory Data Analysis
+        │
+        ▼
+Route Performance Analysis
+        │
+        ▼
+Airport Performance Analysis
+        │
+        ▼
+Time-Based Analysis
+        │
+        ▼
+Business Recommendations
+```
 
 ---
 
-# 👤 Author
+# 🛠 Tech Stack
 
-**Gaurav Chauhan**
-
-Business Analyst | Data Analyst | SQL | Python | Power BI
-
-- **LinkedIn:** https://www.linkedin.com/in/gaurav-chauhan18215/
-- **GitHub:** https://github.com/gauravchauhan18215-cmyk
+| Category | Tools |
+|----------|-------|
+| Programming | Python |
+| Data Manipulation | Pandas, NumPy |
+| Data Visualization | Matplotlib |
+| Notebook | Google Colab / Jupyter |
+| Dataset | U.S. DOT On-Time Performance Dataset |
 
 ---
 
-# 📄 Disclaimer
+# 📈 Key Performance Indicators
 
-This project was completed independently using publicly available U.S. Department of Transportation (DOT) data for educational and portfolio purposes. Any references to United Airlines are solely intended to demonstrate analytical techniques and do not imply affiliation, sponsorship, or endorsement by United Airlines.
+| KPI | Value |
+|------|------:|
+| Total Flights | 472,355 |
+| Delay Rate | 21.10% |
+| Cancellation Rate | 1.37% |
+| Average Arrival Delay | 6.20 Minutes |
+
+---
+
+# 📊 Analysis Performed
+
+## Operational Performance Overview
+
+- Overall network performance
+- Delay analysis
+- Cancellation analysis
+- Flight volume analysis
+
+---
+
+## Route Performance Analysis
+
+- Top busiest routes
+- Highest delay routes
+- Average arrival delay
+- Route-level operational evaluation
+
+---
+
+## Airport Performance Analysis
+
+- Top departure hubs
+- Top arrival hubs
+- Airport delay performance
+- Hub operational evaluation
+
+---
+
+## Time-Based Analysis
+
+- Delay rate by departure hour
+- Monthly operational trends
+- Delay propagation analysis
+
+---
+
+# 💡 Key Business Insights
+
+### ✈️ Network Hubs
+
+Chicago (ORD), Houston (IAH), Denver (DEN), San Francisco (SFO), and Newark (EWR) represent the core of United Airlines' network. Operational improvements at these airports have the potential to improve reliability across a large portion of the network.
+
+---
+
+### 🛫 Route Performance
+
+A relatively small number of routes experience consistently higher delay rates, suggesting opportunities for targeted operational improvements.
+
+---
+
+### 🏢 Airport Operations
+
+Major hub airports experience greater operational complexity due to aircraft rotations, connecting passengers, gate utilization, and crew scheduling.
+
+---
+
+### ⏰ Delay Propagation
+
+Delay rates generally increase throughout the day, indicating that operational disruptions accumulate as aircraft continue through their daily schedules.
+
+---
+
+### 📅 Seasonality
+
+Monthly delay patterns suggest that operational performance varies throughout the year, highlighting periods where additional operational planning may improve reliability.
+
+---
+
+# 🚀 Business Recommendations
+
+- Improve turnaround efficiency at major hubs
+- Optimize departure bank scheduling
+- Increase operational buffers during peak hours
+- Improve aircraft rotation planning
+- Monitor high-delay routes using KPI dashboards
+- Develop predictive operational monitoring dashboards
+- Prioritize operational improvements at high-volume airports
+
+---
+
+# 📁 Repository Structure
+
+```text
+united-airlines-network-performance-optimization
+│
+├── images
+│   └── banner.png
+│
+├── notebook
+│   └── United_Airlines_Network_Performance.ipynb
+│
+├── report
+│   └── United_Airlines_Network_Performance_Report.pdf
+│
+├── data
+│   └── README.md
+│
+├── README.md
+├── requirements.txt
+├── LICENSE
+└── .gitignore
+```
+
+---
+
+# ▶️ How to Run
+
+Clone the repository
+
+```bash
+git clone https://github.com/yourusername/united-airlines-network-performance-optimization.git
+```
+
+Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Open the notebook
+
+```text
+notebook/United_Airlines_Network_Performance.ipynb
+```
+
+Run all notebook cells to reproduce the analysis.
+
+---
+
+# 📄 Executive Report
+
+A professionally formatted executive business report is included in the `report` folder.
+
+```text
+report/United_Airlines_Network_Performance_Report.pdf
+```
+
+---
+
+# 📌 Future Enhancements
+
+- Interactive Power BI dashboard
+- Predictive delay modeling
+- Weather data integration
+- Airport capacity analysis
+- Route profitability analysis
+- Real-time operational monitoring dashboard
+
+---
+
+# ⚠️ Disclaimer
+
+This project was created for educational and portfolio purposes using publicly available data from the U.S. Department of Transportation (DOT). It is an independent analysis and is not affiliated with, endorsed by, or produced for United Airlines.
+
+---
+
+# 👨‍💻 Author
+
+## Gaurav Chauhan
+
+**Data Analytics | Business Intelligence | Python | SQL | Power BI**
+
+If you found this project useful, consider giving it a ⭐ to support the project.
