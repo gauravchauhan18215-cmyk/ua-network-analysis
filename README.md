@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/banner.png" alt="United Airlines Network Performance Optimization" width="100%">
+  <img src="banner.png" alt="United Airlines Network Performance Optimization" width="100%">
 </p>
 
 <h1 align="center">✈️ United Airlines Network Performance Optimization</h1>
